@@ -6,15 +6,9 @@ import dfareporting_utils
 from oauth2client import client
 
 argparser = argparse.ArgumentParser(add_help=False)
-argparser.add_argument(
-    'profile_id', type=int,
-    help='The ID of the profile to add a placement for')
-argparser.add_argument(
-    'campaign_id', type=int,
-    help='The ID of the campaign to associate the placement with')
-argparser.add_argument(
-    'site_id', type=int,
-    help='The ID of the site to associate the placement with')
+argparser.add_argument('profile_id', type=int, help='The ID of the profile to add a placement for')
+argparser.add_argument('campaign_id', type=int, help='The ID of the campaign to associate the placement with')
+argparser.add_argument('site_id', type=int, help='The ID of the site to associate the placement with')
 
 def main(argv):
     flags = dfareporting_utils.get_arguments(argv, __doc__, parents=[argparser])
@@ -26,8 +20,7 @@ def main(argv):
     site_id = flags.site_id
     try:
         # Look up the campaign
-        campaign = service.campaigns().get(
-            profileId=profile_id, id=campaign_id).execute()
+        campaign = service.campaigns().get(profileId=profile_id, id=campaign_id).execute()
 
         logDir = 'file_name_here' #File that is being read
         with open(logDir, "r") as fl:
@@ -37,9 +30,10 @@ def main(argv):
                 arr = line.split(',')
                 if(len(arr[0]) != 9):
                     next(fl)
+                if(arr[11] == "1x1"):
+                    AdDim = "1x1
                     
                 # Construct and save placement.
-              
                 placement = {
                     'name': arr[1],
                     'campaignId': campaign_id,
@@ -59,9 +53,9 @@ def main(argv):
                     'endDate': campaign['endDate'],
                     'pricingType': 'PRICING_TYPE_CPM'
                 }
-
+                # Construct the Ad
                 ad = {
-                 "campaignId": "9481389",
+                 "campaignId": campaign['id'],
                  "startTime": "2016-3-06T10:30:00-0800",
                  "endTime": "2016-12-06T10:30:00-0800",
                  "deliverySchedule": {
@@ -81,8 +75,7 @@ def main(argv):
                 # Execute request and print response.
                 response = request.execute()
 
-                print ('Created placement with ID %s and name "%s".'
-                       % (long(response['id']), response['name']))
+                print ('Created placement with ID %s and name "%s".'% (long(response['id']), response['name']))
 
     except client.AccessTokenRefreshError:
         print ('The credentials have been revoked or expired, please re-run the '
