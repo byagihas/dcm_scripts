@@ -9,8 +9,8 @@ import argparse
 import datetime
 from time import strptime
 from datetime import datetime, timedelta
-import pandas as pd
-from pandas.tseries.offsets import BDay #Possible business day workaround - Python Data Analysis Lib
+#import pandas as pd
+#from pandas.tseries.offsets import BDay Possible business day workaround - Python Data Analysis Lib
 
 import dfareporting_utils
 from oauth2client import client
@@ -33,15 +33,14 @@ def main(argv):
     #BDexample = today - BDay(4) 
     
     try:
-        #Open HTML file for writing
-        htmlfile = open('campaign_list.html', "w")
-        htmlfile.write('<table>')
+        htmlfile = open('campaign_list.html', "w")#Open HTML file for writing
+        htmlfile.write('<table>') #Start writing
         request = service.campaigns().list(profileId=profile_id, advertiserIds=advertiser_id).execute()
-        for campaigns in request['campaigns']:
+        for campaigns in request['campaigns']: #List campaigns
             startDate = strptime(campaigns['startDate'], "%Y-%m-%d")
             htmlfile.write(("<tr>" + "<td>" + campaigns['name'] + "</td>" + "<td>" + str(startDate[1]) +  "-" + str(startDate[2]) + "-" + str(startDate[0]) + "</td>").encode('utf-8'))
             if(datetime(startDate[0],startDate[1],startDate[2]) > datetime.now()):
-                htmlfile.write(("<td>" + str(datetime(startDate[0],startDate[1],startDate[2]) - datetime.now()) + "</td>" + "</tr>"))
+                htmlfile.write(("<td>" + str(datetime(startDate[0],startDate[1],startDate[2]) - datetime.now()) + "</td>" + "</tr>"))#Days from start
             else:
                 htmlfile.write("</tr>")                                
             
