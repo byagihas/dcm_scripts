@@ -6,28 +6,14 @@ from openpyxl import load_workbook
 import xlrd
 
 #Test example file
-XL_TEST_PATH = 'Docs\Floodlight_Example.xlsx'
+XL_TEST_PATH = 'Docs\Floodlight_Test_1.xlsx'
 
-class floodlight:
-		def __init__( self, group, activity):
-			self.group = group
-			self.activity = activity
-			
-		def getGroup( self):
-			return self.group
-			
-		def getActivity( self):
-			return self.activity
-			
-		def __repr__(self):
-			return str(self.group) + " " + str(self.activity)
-			
 def xl_parse( file):
 	#Parsed Excel File
 	parsed_xl = {}
 
 	#Creates a list to later populate with floodlights for output
-	floodlights = []
+	lines = []
 
 	#Loads in the workbook file
 	xl_book = xlrd.open_workbook( file)
@@ -52,37 +38,40 @@ def xl_parse( file):
 		col = 0
 		
 		#Reset dictionaries to empty
-		group = {}
-		activity = {}
+		line = {}
 		
 		#Assign values to group lookups
 		for cell in tsheet.row(rows):
 			col += 1
 			
 			if(col == 1):
-				group['name'] = cell.value
+				line['floodlightActivityGroupName'] = cell.value
 				
 			if(col == 2):
-				group['type'] = cell.value
+				line['floodlightActivityGroupType'] = cell.value.upper().strip()
 			
 			if(col == 3):
-				activity['name'] = cell.value
+				line['name'] = cell.value
 
 			if(col == 4):
-				activity['expectedURL'] = cell.value
+				line['expectedUrl'] = cell.value
 				
 			if(col == 5):
-				activity['countingMethod'] = cell.value
-				floodlights.append(floodlight(group, activity))
+				line['standard'] = cell.value.upper().strip()
+				
+			if(col == 6):
+				line['unique'] = cell.value.upper().strip()
+				lines.append(line)
+				
 			
 		# QA for groups: print(group)
 		# QA for activities: print(activity)
 			
-	parsed_xl['floodlights'] = floodlights
+	parsed_xl['lines'] = lines
 	return parsed_xl
 
 			
 	
 if __name__ == '__main__':
-	floodlights = xl_parse( XL_TEST_PATH)
-	print(floodlights['floodlights'])
+	xl_parsed = xl_parse( XL_TEST_PATH)
+	print(xl_parsed['lines'])

@@ -1,2 +1,1 @@
-# dcm_scripts
-DoubleClick Campaign Manager API Scripts
+# dcm_api_scripts
