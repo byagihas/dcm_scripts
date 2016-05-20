@@ -53,14 +53,24 @@ def main(argv):
         htmlfile = open('campaign_list.html', "w")#Open HTML file for writing
         htmlfile.write('<link rel="stylesheet" href="campaign_list.css">')
         htmlfile.write('<table class="test">') #Start writing
-        htmlfile.write(("<tr>" + "<td>" + "Campaign Name" + "</td>"+ "<td>" + "Campaign ID" + "</td>" + "<td>" + "Start Date" +  "End Date").encode('utf-8'))
+        htmlfile.write(("<tr>" + "<td>" + "Campaign Name" + "</td>"+ "<td>" + "ID"
+                        + "</td>" + "<td>" + "Start Date" + "</td>" + "<td>" + "End Date" + "</td>" + "<td>" + "DFL" + "</td>" + "</tr>").encode('utf-8'))
 
         for campaigns in encoded_campaign_list:
             startDate = strptime(campaigns['startDate'], "%Y-%m-%d")
-            if(datetime(startDate[0],startDate[1],startDate[2]) > datetime.now()):
-                htmlfile.write(("<tr>" + "<td>" + campaigns['name'] + "</td>"+ "<td>" + campaigns['id'] + "</td>" + "<td>" + str(startDate[1]) +  "-" + str(startDate[2]) + "-" + str(startDate[0]) + "</td>").encode('utf-8'))
-                htmlfile.write(("<td>" + str(campaigns['lastModifiedInfo']).encode('utf-8') + "</td>"))
-                htmlfile.write(("<td>" + str(datetime(startDate[0],startDate[1],startDate[2]) - datetime.now()).encode('utf-8') + "</td>" + "</tr>"))#Days from start
+            endDate = strptime(campaigns['endDate'], "%Y-%m-%d")
+            lastModified = campaigns['lastModifiedInfo']
+            if(campaigns['advertiserId'] == advertiserID):
+                if(datetime(startDate[0],startDate[1],startDate[2]) > datetime.now()):
+                    htmlfile.write(("<tr>" + "<td>" + campaigns['name'] + "</td>"+ "<td>"
+                                    + campaigns['id'] + "</td>" + "<td>" + str(startDate[1]) +  "-"
+                                    + str(startDate[2]) + "-" + str(startDate[1]) + "</td>" + "<td>"
+                                    + campaigns['endDate'] + "</td>").encode('utf-8'))
+        
+                    #htmlfile.write(("<td>" + str(lastModified).encode('utf-8') + "</td>"))
+                    htmlfile.write(("<td>" + str(datetime(startDate[0],startDate[1],startDate[2]) - datetime.now()).encode('utf-8') + "</td>" + "</tr>"))#Days from start
+                else:
+                    htmlfile.write("</tr>")
             else:
                 htmlfile.write("</tr>")
         
