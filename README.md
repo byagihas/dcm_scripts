@@ -1,1 +1,1 @@
-# dcm_api_scripts
+# DoubleClick Campaign Manager example scripts
